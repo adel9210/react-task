@@ -10,7 +10,7 @@ import { parseIds } from 'store/utils';
 
 export const SERVER_API_ENDPOINT = config.get('SERVER_API_ENDPOING', '/api');
 
-export const getAvailabilities= createAsyncThunk('getAvailabilities', async (practitionerId: number | string) => {
+export const getAvailabilities= createAsyncThunk('getAvailabilities', async (practitionerId:any) => {
   const response = await fetch(`${SERVER_API_ENDPOINT}/availabilities?practitionerId=${practitionerId}`);
   const parsedResponse = await response.json();
   return parseIds(parsedResponse) as Patient[];
