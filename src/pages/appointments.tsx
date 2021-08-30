@@ -1,9 +1,37 @@
+/* eslint-disable */
 import AppointmentForm from 'components/AppointmentForm';
 import AppointmentList from 'components/AppointmentList';
 import Section from 'components/Section';
 import AllTasks from 'components/AllTasks';
+import { useDispatch, useSelector } from 'react-redux';
+import { appointmentsSelectors, getAppointments } from 'store/appointments';
+import { useEffect } from 'react';
+import { getPractitioner } from 'store/practitioners';
+import { getPatients } from 'store/patients';
+import { getAvailabilities } from 'store/availabilities';
 
 const AppointmentsPage = () => {
+  const dispatch = useDispatch();
+
+  const appointments = useSelector((state) =>
+    appointmentsSelectors.selectAll(state.appointments),
+  );
+
+  const practitioners = useSelector((state) =>
+    appointmentsSelectors.selectAll(state.practitioners),
+  );
+
+  const patients = useSelector((state) =>
+    appointmentsSelectors.selectAll(state.patients),
+  );
+
+  useEffect(() => {
+    dispatch(getAppointments());
+    dispatch(getPractitioner());
+    dispatch(getPatients());
+
+  }, []);
+
   return (
     <div className="appointment page">
       <h1>Appointments</h1>
@@ -45,14 +73,17 @@ const AppointmentsPage = () => {
           title="Appointment Form"
           className="appointment__form"
         >
-          <AppointmentForm />
+          <AppointmentForm practitioners={practitioners} patients={patients}/>
         </Section>
         <Section
           name="appointment-list"
           title="Appointment List"
           className="appointment__list"
         >
-          <AppointmentList />
+          <AppointmentList
+            appointments={appointments}
+            practitioners={practitioners}
+          />
         </Section>
       </div>
     </div>

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Timeslot } from '@prisma/client';
 import {
   createAsyncThunk,

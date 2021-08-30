@@ -653,3 +653,15 @@ section {
   flex-direction: column;
   margin-bottom: 20px;
 }
+
+
+
+// Appointment List
+.appointments {
+  &__item {
+    padding: 12px;
+    box-shadow: 2px 3px 5px #ccc;
+    margin-bottom: 15px;
+    border-radius: 6px;
+  }
+}
