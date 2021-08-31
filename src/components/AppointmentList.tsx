@@ -27,7 +27,6 @@ const AppointmentList = (props: {
 
   useEffect(() => {
     if (props.appointments.length && props.practitioners.length) {
-
       // map appointment with practitionerId
       const combine = props.appointments.map((appointment) => {
         return {
@@ -44,20 +43,20 @@ const AppointmentList = (props: {
 
   return (
     <div className="appointments">
-      {newList.map((appointment) => (
+      {newList.map((appointment, i) => (
         <div
-          key={appointment.practitioner.lastName}
+          key={appointment.practitioner?.lastName}
           className="appointments__item"
         >
           <h3 className="appointments__item__avatar">
-            {appointment.practitioner.firstName}
+            {appointment.practitioner?.firstName}
           </h3>
           <div className="appointments__item__info">
             <h2 className="appointments__item__info__name">
-              Doctor {appointment.practitioner.firstName} {appointment.practitioner.lastName}
+             #{i} Doctor {appointment.practitioner?.firstName} {appointment.practitioner?.lastName}
             </h2>
             <h3 className="appointments__item__major">
-              {appointment.practitioner.speciality}
+              {appointment.practitioner?.speciality}
             </h3>
           </div>
         </div>

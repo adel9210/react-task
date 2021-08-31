@@ -13,8 +13,9 @@ import { getAvailabilities } from 'store/availabilities';
 const AppointmentsPage = () => {
   const dispatch = useDispatch();
 
-  const appointments = useSelector((state) =>
-    appointmentsSelectors.selectAll(state.appointments),
+  const appointments = useSelector((state) =>{
+    return appointmentsSelectors.selectAll(state.appointments)
+  }
   );
 
   const practitioners = useSelector((state) =>

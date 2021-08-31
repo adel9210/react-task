@@ -8,6 +8,7 @@ import { Patient } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { postAppointments } from 'store/appointments';
 import {
   availabilitiesSelectors,
   getAvailabilities,
@@ -15,9 +16,11 @@ import {
 import { Practitioner } from 'store/practitioners';
 
 interface AppointmentForm {
-  patient: string;
-  practitioner: string;
+  patientId: string;
+  practitionerId: string;
   availability: string;
+  startDate: Date;
+  endDate: Date;
   isValid: boolean;
 }
 
@@ -41,8 +44,8 @@ const AppointmentForm = (props: {
   };
 
   const validateForm = () => {
-    const { patient, practitioner, availability } = appointmentForm;
-    const isValid = (patient && practitioner && availability) !== undefined;
+    const { patientId, practitionerId, startDate } = appointmentForm;
+    const isValid = (patientId && practitionerId && startDate) !== undefined;
     setIsFormValid(isValid);
   };
 
@@ -57,12 +60,36 @@ const AppointmentForm = (props: {
       [event.target.name]: event.target.value,
     });
 
-    if (event.target.name === 'practitioner') {
+    if (event.target.name === 'practitionerId') {
       checkAvailabilities(event.target.value);
     }
   };
 
-  const handleSubmit = () => {};
+  const handleAvailabilityChange = (
+    event: ChangeEvent<{
+      name?: string;
+      value: unknown;
+    }>,
+  ) => {
+    const selectedDate = availabilities.filter(
+      (date) => date.id == event.target.value,
+    )[0];
+    setAppointmentForm({
+      ...appointmentForm,
+      startDate: selectedDate.startDate,
+      endDate: selectedDate.endDate,
+    });
+  };
+
+  const handleSubmit = () => {
+    const body = {
+      patientId: appointmentForm.patientId,
+      practitionerId: appointmentForm.practitionerId,
+      startDate: appointmentForm.startDate,
+      endDate: appointmentForm.endDate,
+    };
+    dispatch(postAppointments(body));
+  };
 
   return (
     <>
@@ -83,7 +110,7 @@ const AppointmentForm = (props: {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              name="patient"
+              name="patientId"
               onChange={handleChange}
             >
               {props.patients.map((patient) => (
@@ -101,8 +128,8 @@ const AppointmentForm = (props: {
             </InputLabel>
             <Select
               labelId="practitioner"
-              id="practitioner"
-              name="practitioner"
+              id="practitionerId"
+              name="practitionerId"
               onChange={handleChange}
             >
               {props.practitioners.map((practitioner) => (
@@ -115,14 +142,12 @@ const AppointmentForm = (props: {
         </Grid>
         <Grid item lg={3} xs={12}>
           <FormControl disabled={!availabilities.length}>
-            <InputLabel id="demo-simple-select-label">
-              Select Time
-            </InputLabel>
+            <InputLabel id="demo-simple-select-label">Select Time</InputLabel>
             <Select
               labelId="availabilities"
               id="availabilities"
               name="availability"
-              onChange={handleChange}
+              onChange={handleAvailabilityChange}
             >
               {availabilities.map((availability) => (
                 <MenuItem key={availability.id} value={availability.id}>
